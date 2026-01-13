@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AO26 Circular Design Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #1E2886;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            background: white;
+            color: #1E2886;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 4px solid transparent;
+        }
+
+        .tab-button:hover {
+            background: #f0f4f8;
+        }
+
+        .tab-button.active {
+            background: #0091D2;
+            color: white;
+            border-bottom: 4px solid #00E1FF;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #1E2886;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0091D2;
+        }
+
+        h3 {
+            color: #0091D2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #0091D2 0%, #1E2886 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #00E1FF;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .status-good {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        }
+
+        .status-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        }
+
+        .status-alert {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #1E2886;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .score-cell {
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .score-cell:not(.score-overall-high):not(.score-overall-medium-high):not(.score-overall-medium):not(.score-overall-low) {
+            background: white;
+        }
+
+        .score-high {
+            color: #10b981;
+        }
+
+        .score-medium-high {
+            color: #84cc16;
+        }
+
+        .score-medium {
+            color: #f59e0b;
+        }
+
+        .score-low {
+            color: #ef4444;
+        }
+
+        .score-overall-high {
+            background: #10b981;
+            color: white;
+        }
+
+        .score-overall-medium-high {
+            background: #84cc16;
+            color: white;
+        }
+
+        .score-overall-medium {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .score-overall-low {
+            background: #ef4444;
+            color: white;
+        }
+
+        .highlight-row .score-cell:not(.score-overall-high):not(.score-overall-medium-high):not(.score-overall-medium):not(.score-overall-low) {
+            background: #9FFBF9 !important;
+        }
+
+        .highlight-row td:not(.score-cell) {
+            background: #9FFBF9 !important;
+        }
+
+        .feedback-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 5px solid #0091D2;
+        }
+
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .quote-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00E1FF;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-style: italic;
+        }
+
+        .quote-card.positive {
+            border-left-color: #10b981;
+        }
+
+        .quote-card.negative {
+            border-left-color: #ef4444;
+        }
+
+        .theme-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #0091D2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 1.05em;
+        }
+
+        .theme-number {
+            display: inline-block;
+            background: #0091D2;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .analysis-section {
+            background: #f9fafb;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #1E2886;
+        }
+
+        .bullet-point {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .bullet-point::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #0091D2;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .bullet-point-alert::before {
+            color: #ef4444;
+        }
+
+        .bullet-point-success::before {
+            color: #10b981;
+        }
+
+        .bullet-point-none::before {
+            content: "";
+        }
+
+        .numbered-point {
+            padding: 10px 0;
+            padding-left: 0px;
+        }
+
+        .targets-box {
+            background: linear-gradient(135deg, #1E2886 0%, #0091D2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .targets-box h3 {
+            color: #00E1FF;
+        }
+
+        .target-item {
+            font-size: 1.3em;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .target-item:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00E1FF;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .year-label {
+            font-size: 1.2em;
+            color: #1E2886;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .big-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #0091D2;
+        }
+
+        .increase-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quote-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .progress-bar-container {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0091D2, #00E1FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AO26 Circular Design Dashboard</h1>
+            <p>Aggregated Circular Design Response | January 2026</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'summary')">Summary</button>
+            <button class="tab-button" onclick="openTab(event, 'scorecard')">Aggregate Scorecard</button>
+            <button class="tab-button" onclick="openTab(event, 'feedback')">Qualitative Feedback</button>
+            <button class="tab-button" onclick="openTab(event, 'analysis')">Analysis</button>
+        </div>
+
+        <!-- Tab 1: Summary -->
+        <div id="summary" class="tab-content active">
+            <h2>AO26 Targets & Progress Summary</h2>
+            
+            <div class="targets-box">
+                <h3>AO26 Waste Reduction Targets</h3>
+                <div class="target-item">
+                    Reduce the entire event waste <span class="highlight-number">10%</span> year on year
+                </div>
+                <div class="target-item">
+                    Mixed Construction Waste (i.e. bump in/out)
+                </div>
+                <div class="target-item" style="padding-left: 30px;">
+                    <span class="highlight-number">10%</span> Reduction in volume
+                </div>
+                <div class="target-item" style="padding-left: 30px;">
+                    <span class="highlight-number">90%</span> Diversion from landfill
+                </div>
+            </div>
+
+            <h3>Key Performance Indicators</h3>
+            <div class="metrics-grid">
+                <div class="metric-card status-good">
+                    <div class="metric-value">89%</div>
+                    <div class="metric-label">CDG Adoption Rate</div>
+                </div>
+                <div class="metric-card status-good">
+                    <div class="metric-value">73%</div>
+                    <div class="metric-label">RML Adoption Rate</div>
+                </div>
+                <div class="metric-card status-good">
+                    <div class="metric-value">96%</div>
+                    <div class="metric-label">CDG Satisfaction</div>
+                </div>
+                <div class="metric-card status-good">
+                    <div class="metric-value">87%</div>
+                    <div class="metric-label">RML Satisfaction</div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 30px;">
+                <h3 style="text-align: center; margin-bottom: 40px; color: #1E2886; font-size: 2em;">Circular Design Adoption</h3>
+                
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <!-- Labels positioned above their respective bars -->
+                    <div style="position: relative; margin-bottom: 15px; height: 25px;">
+                        <div style="position: absolute; left: 120px;">
+                            <span style="font-size: 1.1em; font-weight: bold; color: #1E2886;">Target</span>
+                        </div>
+                        <div style="position: absolute; right: 150px;">
+                            <span style="font-size: 1.1em; font-weight: bold; color: #1E2886;">Actual</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Overlapping Bars -->
+                    <div style="position: relative; width: 100%; height: 80px;">
+                        <!-- Actual Bar (45%) - Gray pill - Full width base layer -->
+                        <div style="position: absolute; left: 0; right: 0; height: 80px; background: #d1d5db; border-radius: 40px; display: flex; align-items: center; justify-content: flex-end; padding-right: 30px;">
+                            <span style="font-size: 2.5em; font-weight: bold; color: #1E2886;">45%</span>
+                        </div>
+                        
+                        <!-- Target Bar (16%) - Blue pill - Overlaid on top, shorter -->
+                        <div style="position: absolute; left: 0; width: 35%; height: 80px; background: #1E2886; border-radius: 40px; display: flex; align-items: center; justify-content: flex-end; padding-right: 30px; z-index: 10;">
+                            <span style="font-size: 2.5em; font-weight: bold; color: white;">16%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <div style="font-size: 1.5em; color: #10b981; font-weight: bold;">+181% over target</div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 0px; font-size: 1.8em;">Performance shift<br>AO25 - AO26 comparison</h3>
+            <div style="background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); padding: 25px 50px 50px 50px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 20px 0;">
+                <div style="display: flex; justify-content: center; align-items: flex-end; gap: 60px; max-width: 1000px; margin: 0 auto; position: relative;">
+                    <!-- AO25 Box -->
+                    <div style="display: flex; align-items: flex-end; gap: 20px;">
+                        <div style="text-align: right; max-width: 160px; padding-bottom: 25px;">
+                            <div style="font-size: 1.3em; font-weight: bold; margin-bottom: 8px; color: #1E2886;">2025</div>
+                            <div style="font-size: 1em; line-height: 1.4; color: #6b7280;">7 agencies top circular performers</div>
+                        </div>
+                        <div>
+                            <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; border: 3px solid #10b981; padding-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                <span style="font-size: 4.5em; font-weight: bold; color: #6b7280;">7</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AO26 Box - Taller (proportional to 15 vs 7) -->
+                    <div style="display: flex; align-items: flex-end; gap: 20px;">
+                        <div style="position: relative;">
+                            <div style="width: 150px; height: 321px; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; border: 3px solid #10b981; position: relative; overflow: visible; padding-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                <span style="font-size: 4.5em; font-weight: bold; color: #6b7280; position: relative; z-index: 1;">15</span>
+                                <!-- Growth overlay with much smaller refined dot pattern -->
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 171px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%); background-image: radial-gradient(circle, #10b981 1px, transparent 1px); background-size: 8px 8px; border-radius: 12px 12px 0 0; border: 3px solid #10b981; border-bottom: 3px solid #10b981; z-index: 2; box-shadow: inset 0 2px 4px rgba(16, 185, 129, 0.1);">
+                                </div>
+                            </div>
+                            <!-- Enhanced bracket with better styling -->
+                            <div style="position: absolute; right: -40px; top: 0; height: 171px;">
+                                <div style="border-right: 4px solid #10b981; border-top: 4px solid #10b981; border-bottom: 4px solid #10b981; width: 30px; height: 100%; position: relative; border-radius: 0 8px 8px 0;">
+                                    <div style="position: absolute; left: 35px; top: 50%; transform: translateY(-50%); white-space: nowrap; background: white; padding: 8px 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);">
+                                        <span style="font-size: 1.6em; font-weight: bold; color: #10b981;">114% increase</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: left; max-width: 180px; padding-bottom: 25px;">
+                            <div style="font-size: 1.3em; font-weight: bold; margin-bottom: 8px; color: #1E2886;">AO26</div>
+                            <div style="font-size: 1em; line-height: 1.4; color: #6b7280;">15 agencies forecasting to be top circular performers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Participation</h3>
+            <p style="font-size: 1.2em; margin-bottom: 20px;"><strong>34 total participants</strong> across the circular design program</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">5</div>
+                    <div class="metric-label">TA Project Managers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">29</div>
+                    <div class="metric-label">Agencies & Builders</div>
+                </div>
+            </div>
+
+            <h3>Progress Highlights</h3>
+            <div class="analysis-section" style="border-left-color: #10b981;">
+                <div class="bullet-point bullet-point-success">High buy-in and engagement across the circular program</div>
+                <div class="bullet-point bullet-point-success">Tools (CDG, RML, education) valued and widely adopted</div>
+                <div class="bullet-point bullet-point-success">TA internal asset tracking capability saw a step-change for AO26</div>
+            </div>
+
+            <h3>Key Signals</h3>
+            <div class="analysis-section" style="border-left-color: #ef4444;">
+                <div class="bullet-point bullet-point-alert">Inconsistencies between adoption and practice</div>
+                <div class="bullet-point bullet-point-alert">Waste management and asset tracking remain systemic gaps</div>
+                <div class="bullet-point bullet-point-alert">Limited resourcing and investment constraining delivery</div>
+                <div class="bullet-point bullet-point-alert">27 of 29 participants reference sustainability commitments, only 3 publish these publicly</div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Aggregate Scorecard -->
+        <div id="scorecard" class="tab-content">
+            <h2>Aggregate Scorecard Summary</h2>
+            
+            <div style="background: #f9fafb; padding: 25px; border-radius: 10px; margin-bottom: 30px; border-left: 5px solid #0091D2;">
+                <p style="font-size: 1.1em; margin-bottom: 20px;">
+                    <strong>Aggregated scores:</strong><br>
+                    TA PMs: 59%<br>
+                    Agencies/builders: 68%
+                </p>
+                
+                <p style="font-size: 1.1em; margin-bottom: 10px;"><strong>Callouts:</strong></p>
+                <div style="padding-left: 20px;">
+                    <p style="margin-bottom: 15px;"><strong>1.</strong> Agencies are reporting outperformance compared with TA. There are some variables to consider here:</p>
+                    <div style="padding-left: 25px; margin-bottom: 15px;">
+                        <p style="margin-bottom: 8px;">- Agencies are more prone to an overconfidence bias</p>
+                        <p style="margin-bottom: 8px;">- Internal teams TA PMs and build partners prone to an honesty bias</p>
+                    </div>
+                    <p style="margin-bottom: 15px;"><strong>2.</strong> The question remains – how to measure the AO26 forecast with actual results</p>
+                    <p style="margin-bottom: 0;"><strong>3.</strong> The zone of focus is middle of the pack, these represent the organisations who were more realistic in responses and have the most room to improve</p>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table id="scoreTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Organisation</th>
+                            <th>Sustainability Statement</th>
+                            <th>Modular & DfD</th>
+                            <th>RML</th>
+                            <th>Waste Management</th>
+                            <th>Asset Tracking</th>
+                            <th>Innovation</th>
+                            <th>Overall Target</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 style="margin-top: 50px;">Feedback Themes</h2>
+            
+            <div class="theme-card">
+                <span class="theme-number">01</span>
+                <strong>Annual design cycle is a disincentive to adopt the circular design guidelines and responsible materials.</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">02</span>
+                <strong>The RML is missing the mark for temporary materials or reliable supply</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">03</span>
+                <strong>Seasonal factors (Dec/Jan) limit availability of responsible materials and must be planned for</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">04</span>
+                <strong>Budget constraints are the most frequently cited barrier to adopting circular design and materials</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">05</span>
+                <strong>Waste management and asset tracking are the largest systemic gaps in delivering circular outcomes</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">06</span>
+                <strong>Circularity continuity is difficult to support without knowledge systems (knowledge lost with attrition/agency turnover)</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">07</span>
+                <strong>Design waste out - extend the circular design program to all internal teams and partner agencies</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">08</span>
+                <strong>Smaller agencies are disproportionately pressured by circular requirements, resourcing and cost</strong>
+            </div>
+            
+            <div class="theme-card">
+                <span class="theme-number">09</span>
+                <strong>Agencies appear to be outperforming TA, however it is difficult to substantiate results without systems and procurement policy</strong>
+            </div>
+        </div>
+
+        <!-- Tab 3: Qualitative Feedback -->
+        <div id="feedback" class="tab-content">
+            <h2>Qualitative Feedback</h2>
+
+            <div class="feedback-section">
+                <h3>TA Circular Design Guidelines</h3>
+                <div class="quote-grid">
+                    <div class="quote-card positive">
+                        "Circular guidelines are great. We need to ensure our designers are fully across them too. Not just operations."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- TA PM</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "The AO26 Circular Design Guidelines are very clear and practical, especially in outlining the seven circular design principles and providing examples that align with sustainable event delivery."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "Useful! The information in the guideline, aligns with our approach to event design and build."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "The guidelines are great. We re-use a lot of materials from last year so already addressing a lot of the key points."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "The reductive approach is often perceived as missing an opportunity to impress players - there needs to be an attitude shift at a higher level towards a 'less is more' attitude across some assets and designs."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- TA PM</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "Probably missed it in the discussion"
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Build partner</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h3>TA Responsible Materials</h3>
+                <div class="quote-grid">
+                    <div class="quote-card positive">
+                        "We aim to source materials that are recyclable in the first instance, as well as those from suppliers that have take back schemes (i.e. recycled plastics). We also work with resource recovery partners to recycle a wider range of materials."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "Builders are very concentrated on the RML and enjoy being able to make contributions too."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- TA PM</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "It's a learning curve for us. We have product being procured from overseas and we're working with our various suppliers to source/use responsible materials as much as possible."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "I realise we can submit a material not there but the ones that were there were minimal and don't reflect the event industry as well as they could."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "The list will become more and more useful as it builds. We frequently need to find new material types on short notice for TA and sometimes don't have the time available during builds to refer to or source via the responsible materials list."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Build partner</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "For smaller agencies, the challenge can be supplier availability or minimum order quantities. Expanding the list to include scalable or readily available local alternatives would make implementation more achievable."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agencies</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h3>Asset Tracking & Budget</h3>
+                <div class="quote-grid">
+                    <div class="quote-card positive">
+                        "By 2026–2027, we aim to integrate Tennis Australia's tracking framework into our workflow, ensuring stronger measurement of reuse, recycling, and material recovery outcomes across all AO projects."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "The guidelines themselves are great but external factors (decision making timelines and budgets) don't allow for these to be implemented meaningfully in our spaces."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- TA PM</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "This needs to be discussed with clients as a cost factor, however, this is a nice incentive but its costly."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "A lot of the materials are architectural and for the most part we only have budget to use basic build materials, such as pine, ply."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "For smaller agencies it can be challenging to apply all recommendations due to resource and budget constraints."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "The annual nature and temporary employment structure for the AO means that there's a lack of continuity year on year. Lots of the learnings and design value can so quickly be discontinued."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- TA PM</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "We have not yet implemented tracking measures. Should we engage in a multi-year contract we intend on implementing these measures."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h3>Waste Management</h3>
+                <div class="quote-grid">
+                    <div class="quote-card positive">
+                        "While some materials are currently single-use due to branding or hygiene requirements, we are actively moving toward fully modular, hire-based systems. Our goal is to eliminate single-use waste by 2027."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "So good to see all this information being circulated to all agencies. Questions from us, How will the bin system onsite work this year? Is everything sorted and is there a breakdown of where everything goes?"
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card positive">
+                        "For AO26, we aim to formalise waste reduction frameworks and strengthen supplier alignment through updated sustainability briefs and post-event reporting."
+                        <div style="font-style: normal; margin-top: 10px; color: #0091D2; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "Previous years we have used onsite TA provided bins so its untracked, and co-mingled, off site we have recycling plan."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                    <div class="quote-card negative">
+                        "We handle all waste and rubbish disposal offsite and do not use the onsite system."
+                        <div style="font-style: normal; margin-top: 10px; color: #ef4444; font-weight: bold;">- Agency</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Analysis -->
+        <div id="analysis" class="tab-content">
+            <h2>Analysis: Progress – Signals – Interventions</h2>
+
+            <div class="analysis-section" style="border-left-color: #10b981;">
+                <h3 style="color: #10b981;">Progress</h3>
+                <div class="bullet-point bullet-point-success">High buy-in and engagement across program: 89% CDG adoption rate, 73% RML adoption rate</div>
+                <div class="bullet-point bullet-point-none">15 agencies/builders/TA PMs (45%) forecasting to achieve >90% circular performance</div>
+                <div class="bullet-point bullet-point-none">10 agencies/builders/TA PMs (30%) forecasting >50% performance</div>
+                <div class="bullet-point bullet-point-success">Tools (CDG, RML, education) valued and widely adopted</div>
+                <div class="bullet-point bullet-point-none">96% CDG satisfaction rating (Rating 4: 42%, Rating 5: 54%)</div>
+                <div class="bullet-point bullet-point-none">87% RML satisfaction rating (Rating 4: 52%, Rating 5: 34%)</div>
+                <div class="bullet-point bullet-point-success">Top performers demonstrate excellence is achievable - 45% forecast achieving circular status by AO26</div>
+                <div class="bullet-point bullet-point-success">TA internal asset tracking capability saw a step-change to track assets for AO26</div>
+            </div>
+
+            <div class="analysis-section" style="border-left-color: #f59e0b;">
+                <h3 style="color: #f59e0b;">Signals</h3>
+                <div class="bullet-point bullet-point-alert"><strong>Positive feedback and high adoption rates misaligned with qualitative feedback.</strong> Responses indicate a potential overstatement of circular ambition, evidenced by:</div>
+                <div style="padding-left: 50px;">
+                    <div class="bullet-point bullet-point-alert"><strong>Sustainability statements without transparency:</strong> 27 of 29 participants reference sustainability commitments, only 3 publish these publicly</div>
+                    <div class="bullet-point bullet-point-alert"><strong>Ambitious forecasts without enabling systems:</strong> 8 organisations project 20%+ improvement, without supporting systems/processes</div>
+                    <div class="bullet-point bullet-point-alert"><strong>Limited resourcing and investment:</strong> Circular initiatives are often under-resourced, constraining delivery and scalability</div>
+                    <div class="bullet-point bullet-point-alert"><strong>Inconsistencies between adoption and practice:</strong> Adoption of CDG and RML is not reflected in qualitative responses or operational capability</div>
+                </div>
+                <div class="bullet-point bullet-point-alert"><strong>Waste management and asset tracking remain systemic gaps</strong> that cannot be closed in 6 months without significant resources</div>
+                <div class="bullet-point bullet-point-alert"><strong>22-point deficit in waste management between TA and Agencies</strong> - likely indicative of lack of reliable waste and asset data to demonstrate circular outcomes</div>
+                <div class="bullet-point bullet-point-alert"><strong>Circular design knowledge retention risk</strong> due to attrition and annual employment cycles</div>
+            </div>
+
+            <div class="analysis-section" style="border-left-color: #0091D2;">
+                <h3 style="color: #1E2886;">Interventions for Consideration</h3>
+                <div class="numbered-point"><strong>1.</strong> Develop TA's response to key themes: Budget, waste management, and temporary materials</div>
+                <div class="numbered-point"><strong>2.</strong> Expert review of the RML for temporary materials</div>
+                <div class="numbered-point"><strong>3.</strong> TA approval for long-term design: Update CDG to align including precinct waste targets and continue communications and education. Celebrate stories and provide recognition</div>
+                <div class="numbered-point"><strong>4.</strong> Post event reporting to encourage reality check on transformation timeframes, communicate challenges, embrace setbacks as learning, celebrate wins</div>
+                <div class="numbered-point"><strong>5.</strong> Rethink waste measurement and connection to teams</div>
+                <div class="numbered-point"><strong>6.</strong> Standardise simple systems for asset tracking for knowledge and asset retention</div>
+                <div class="numbered-point"><strong>7.</strong> Zone in on mid-performers with greatest propensity for growth/change</div>
+                <div class="numbered-point"><strong>8.</strong> Small agency support package - offer simplified compliance requirements</div>
+                <div class="numbered-point"><strong>9.</strong> Understand the role of procurement in enabling circular practices</div>
+            </div>
+
+            <div class="analysis-section" style="border-left-color: #00E1FF; margin-top: 40px;">
+                <h3 style="color: #1E2886;">Next Steps</h3>
+                <div class="numbered-point"><strong>01.</strong> Distribute to Circular Design Advocates for review/ input</div>
+                <div class="numbered-point"><strong>02.</strong> Consider what feedback is material (prioritised) to be addressed (how and when)</div>
+                <div class="numbered-point"><strong>03.</strong> We have limited performance visibility. Forecasted improvements lack clear mechanisms to track actual performance against projections – consider how to encourage actual outcomes in post event reporting</div>
+                <div class="numbered-point"><strong>04.</strong> Establish how far-reaching the Circular program awareness has been during event, that is, the gaps to include in future (agencies, builders, suppliers, designers)</div>
+            </div>
+
+            <div style="background: #e5e7eb; color: #ef4444; padding: 25px; border-radius: 10px; margin-top: 30px; font-size: 1.2em; font-weight: bold; text-align: center; border: 2px solid #ef4444;">
+                ⚠️ The circular program is at a turning point. Constraints need to be addressed to avoid initiatives being abandoned.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Scorecard data
+        const scoreData = [
+            { org: "Frank Wild", sustainability: 90, modular: 90, rml: 90, waste: 90, asset: 90, innovation: 90, overall: 90 },
+            { org: "Akcelo", sustainability: 90, modular: 90, rml: 90, waste: 90, asset: 90, innovation: 90, overall: 90 },
+            { org: "Valiant Commercial Furniture", sustainability: 90, modular: 90, rml: 90, waste: 90, asset: 90, innovation: 90, overall: 89 },
+            { org: "SUBVRT", sustainability: 90, modular: 74, rml: 90, waste: 90, asset: 90, innovation: 80, overall: 86 },
+            { org: "Boom Studios", sustainability: 90, modular: 90, rml: 90, waste: 90, asset: 63, innovation: 90, overall: 86 },
+            { org: "PIM Group", sustainability: 90, modular: 90, rml: 90, waste: 90, asset: 90, innovation: 68, overall: 86 },
+            { org: "Moth Design", sustainability: 90, modular: 80, rml: 84, waste: 90, asset: 77, innovation: 90, overall: 85 },
+            { org: "Dann Event Hire", sustainability: 90, modular: 90, rml: 67, waste: 90, asset: 90, innovation: 80, overall: 85 },
+            { org: "TES-Live", sustainability: 90, modular: 70, rml: 75, waste: 90, asset: 77, innovation: 90, overall: 82 },
+            { org: "ADS Aust", sustainability: 90, modular: 0, rml: 83, waste: 70, asset: 90, innovation: 80, overall: 82 },
+            { org: "Yakusan", sustainability: 90, modular: 80, rml: 84, waste: 69, asset: 77, innovation: 80, overall: 80 },
+            { org: "AO Reserve", sustainability: 0, modular: 90, rml: 69, waste: 66, asset: 90, innovation: 54, overall: 77 },
+            { org: "Harry the Hirer", sustainability: 50, modular: 90, rml: 90, waste: 64, asset: 77, innovation: 90, overall: 77 },
+            { org: "Precinct Infrastructure", sustainability: 0, modular: 80, rml: 84, waste: 70, asset: 76, innovation: 0, overall: 76 },
+            { org: "The Valentina Group Agency", sustainability: 90, modular: 80, rml: 85, waste: 75, asset: 60, innovation: 65, overall: 76 },
+            { org: "Ed&Ed Studio", sustainability: 50, modular: 80, rml: 84, waste: 74, asset: 77, innovation: 70, overall: 74 },
+            { org: "Mango Communications", sustainability: 95, modular: 95, rml: 95, waste: 73, asset: 50, innovation: 38, overall: 74 },
+            { org: "Twenty3 Sport & Entertainment", sustainability: 90, modular: 74, rml: 75, waste: 74, asset: 63, innovation: 54, overall: 72 },
+            { org: "Flipside Creative", sustainability: 78, modular: 63, rml: 80, waste: 75, asset: 87, innovation: 75, overall: 72 },
+            { org: "Precincts", sustainability: 0, modular: 80, rml: 66, waste: 50, asset: 70, innovation: 0, overall: 67 },
+            { org: "Hype Workshop", sustainability: 50, modular: 90, rml: 90, waste: 64, asset: 77, innovation: 90, overall: 63 },
+            { org: "Seven7 Licensing", sustainability: 50, modular: 80, rml: 68, waste: 61, asset: 38, innovation: 80, overall: 63 },
+            { org: "Greenspec Events", sustainability: 50, modular: 70, rml: 73, waste: 74, asset: 63, innovation: 44, overall: 62 },
+            { org: "Lee Bros Fencing", sustainability: 25, modular: 31, rml: 71, waste: 56, asset: 63, innovation: 50, overall: 50 },
+            { org: "Pulse Group", sustainability: 90, modular: 53, rml: 38, waste: 15, asset: 50, innovation: 35, overall: 47 },
+            { org: "Tournament Spaces", sustainability: 0, modular: 38, rml: 47, waste: 13, asset: 70, innovation: 0, overall: 45 },
+            { org: "JT Dodd", sustainability: 37, modular: 79, rml: 66, waste: 42, asset: 35, innovation: 28, overall: 45 },
+            { org: "Fortress Productions/Games Age", sustainability: 50, modular: 54, rml: 44, waste: 90, asset: 0, innovation: 0, overall: 40 },
+            { org: "Arena", sustainability: 50, modular: 60, rml: 56, waste: 15, asset: 17, innovation: 13, overall: 35 },
+            { org: "IVE Group", sustainability: 50, modular: 60, rml: 41, waste: 15, asset: 13, innovation: 19, overall: 33 },
+            { org: "Republic Events Australia", sustainability: 50, modular: 47, rml: 29, waste: 30, asset: 25, innovation: 19, overall: 33 },
+            { org: "Broadcast", sustainability: 0, modular: 31, rml: 29, waste: 13, asset: 47, innovation: 0, overall: 31 },
+            { org: "Build One", sustainability: 37, modular: 53, rml: 37, waste: 15, asset: 15, innovation: 15, overall: 28 },
+            { org: "GEMBA", sustainability: 25, modular: 31, rml: 25, waste: 31, asset: 25, innovation: 25, overall: 27 }
+        ];
+
+        function getScoreClass(score) {
+            if (score >= 75) return 'score-high';        // 75-90: bright green
+            if (score >= 50) return 'score-medium-high'; // 50-74: khaki green
+            if (score >= 25) return 'score-medium';      // 25-49: amber
+            return 'score-low';                          // 0-24: red
+        }
+
+        function getOverallScoreClass(score) {
+            if (score >= 75) return 'score-overall-high';        // 75-90: bright green bg
+            if (score >= 50) return 'score-overall-medium-high'; // 50-74: khaki green bg
+            if (score >= 25) return 'score-overall-medium';      // 25-49: amber bg
+            return 'score-overall-low';                          // 0-24: red bg
+        }
+
+        function formatScore(score) {
+            return score === 0 ? '-' : score + '%';
+        }
+
+        // Populate scorecard table
+        const tbody = document.getElementById('scoreTableBody');
+        const highlightRows = [12, 14, 20, 26, 32]; // Rows to highlight with cyan background
+        
+        // Calculate rankings with ties
+        let currentRank = 1;
+        let previousScore = null;
+        let sameRankCount = 0;
+        
+        scoreData.forEach((row, index) => {
+            const rowNumber = index + 1;
+            
+            // Calculate rank
+            let rank;
+            if (previousScore === null || row.overall < previousScore) {
+                rank = currentRank + sameRankCount;
+                currentRank = rank;
+                sameRankCount = 1;
+                previousScore = row.overall;
+            } else if (row.overall === previousScore) {
+                rank = currentRank;
+                sameRankCount++;
+            }
+            
+            const tr = document.createElement('tr');
+            
+            // Add highlight class if this is one of the special rows
+            if (highlightRows.includes(rowNumber)) {
+                tr.classList.add('highlight-row');
+            }
+            
+            tr.innerHTML = `
+                <td>${rank}</td>
+                <td><strong>${row.org}</strong></td>
+                <td class="score-cell ${getScoreClass(row.sustainability)}">${formatScore(row.sustainability)}</td>
+                <td class="score-cell ${getScoreClass(row.modular)}">${formatScore(row.modular)}</td>
+                <td class="score-cell ${getScoreClass(row.rml)}">${formatScore(row.rml)}</td>
+                <td class="score-cell ${getScoreClass(row.waste)}">${formatScore(row.waste)}</td>
+                <td class="score-cell ${getScoreClass(row.asset)}">${formatScore(row.asset)}</td>
+                <td class="score-cell ${getScoreClass(row.innovation)}">${formatScore(row.innovation)}</td>
+                <td class="score-cell ${getOverallScoreClass(row.overall)}"><strong>${formatScore(row.overall)}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    </script>
+</body>
+</html>
