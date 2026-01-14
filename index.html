@@ -313,7 +313,7 @@
         }
 
         .bullet-point::before {
-            content: "→";
+            content: "\2192";
             position: absolute;
             left: 0;
             color: #0091D2;
@@ -529,44 +529,63 @@
                 </div>
             </div>
 
-            <h3 style="margin-bottom: 0px; font-size: 1.8em;">Performance shift<br>AO25 - AO26 comparison</h3>
-            <div style="background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); padding: 25px 50px 50px 50px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 20px 0;">
-                <div style="display: flex; justify-content: center; align-items: flex-end; gap: 60px; max-width: 1000px; margin: 0 auto; position: relative;">
-                    <!-- AO25 Box -->
-                    <div style="display: flex; align-items: flex-end; gap: 20px;">
-                        <div style="text-align: right; max-width: 160px; padding-bottom: 25px;">
-                            <div style="font-size: 1.3em; font-weight: bold; margin-bottom: 8px; color: #1E2886;">2025</div>
-                            <div style="font-size: 1em; line-height: 1.4; color: #6b7280;">7 agencies top circular performers</div>
+            <h3 style="margin-bottom: 15px; font-size: 1.8em;">Performance shift<br>AO25 - AO26 comparison of top circular performers</h3>
+            <div style="background: white; padding: 60px 50px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 20px 0;">
+                <div style="display: flex; justify-content: center; align-items: flex-end; gap: 220px; max-width: 1100px; margin: 0 auto; position: relative; padding-bottom: 60px;">
+                    <!-- Baseline connecting line -->
+                    <div style="position: absolute; bottom: 60px; left: calc(50% - 280px); width: 560px; height: 2px; background: #cbd5e1; z-index: 0;"></div>
+                    
+                    <!-- AO25 Box - positioned to sit on baseline -->
+                    <div style="position: relative; text-align: center; align-self: flex-end;">
+                        <!-- AO25 label on top -->
+                        <div style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 15px; white-space: nowrap;">
+                            <div style="font-size: 1.4em; font-weight: bold; color: #1E2886;">AO25</div>
                         </div>
-                        <div>
-                            <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; border: 3px solid #10b981; padding-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                                <span style="font-size: 4.5em; font-weight: bold; color: #6b7280;">7</span>
+                        <div style="width: 160px; height: 160px; background: #e5e7eb; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.12); position: relative; z-index: 1;">
+                            <div style="font-size: 5em; font-weight: bold; color: #1f2937; line-height: 1;">7</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Center Label and Arrow - horizontally centered -->
+                    <div style="position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 10; text-align: center;">
+                        <div style="background: white; padding: 12px 20px; border-radius: 8px; border: 2px solid #0091D2; box-shadow: 0 2px 8px rgba(0,145,210,0.15); margin-bottom: 15px;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #0091D2; white-space: nowrap;">114% increase</div>
+                            <div style="font-size: 1em; color: #0091D2;">(+8 agencies)</div>
+                        </div>
+                        <!-- Horizontal Arrow pointing right -->
+                        <svg width="140" height="30" style="display: block; margin: 0 auto;">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#0091D2" />
+                                </marker>
+                            </defs>
+                            <line x1="10" y1="15" x2="130" y2="15" stroke="#0091D2" stroke-width="3" marker-end="url(#arrowhead)" />
+                        </svg>
+                    </div>
+                    
+                    <!-- AO26 Box - Taller, aligned to baseline -->
+                    <div style="position: relative; text-align: center; align-self: flex-end;">
+                        <!-- AO26 label on top -->
+                        <div style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 15px; white-space: nowrap;">
+                            <div style="font-size: 1.4em; font-weight: bold; color: #1E2886;">AO26</div>
+                        </div>
+                        <div style="width: 160px; height: 320px; background: linear-gradient(135deg, #0091D2 0%, #1E2886 100%); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 20px; box-shadow: 0 12px 24px rgba(0,145,210,0.35); position: relative; overflow: hidden; z-index: 1;">
+                            <div style="font-size: 5em; font-weight: bold; color: white; line-height: 1; position: relative; z-index: 2;">15</div>
+                            <!-- Shine effect -->
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none;"></div>
+                        </div>
+                        <!-- Description to the right -->
+                        <div style="position: absolute; left: 180px; top: 50%; transform: translateY(-50%); text-align: left; width: 220px;">
+                            <div style="font-size: 1em; line-height: 1.4; color: #1f2937;">
+                                <strong>Top circular performers</strong><br>
+                                15 agencies forecasted
                             </div>
                         </div>
                     </div>
                     
-                    <!-- AO26 Box - Taller (proportional to 15 vs 7) -->
-                    <div style="display: flex; align-items: flex-end; gap: 20px;">
-                        <div style="position: relative;">
-                            <div style="width: 150px; height: 321px; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; border: 3px solid #10b981; position: relative; overflow: visible; padding-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                                <span style="font-size: 4.5em; font-weight: bold; color: #6b7280; position: relative; z-index: 1;">15</span>
-                                <!-- Growth overlay with much smaller refined dot pattern -->
-                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 171px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%); background-image: radial-gradient(circle, #10b981 1px, transparent 1px); background-size: 8px 8px; border-radius: 12px 12px 0 0; border: 3px solid #10b981; border-bottom: 3px solid #10b981; z-index: 2; box-shadow: inset 0 2px 4px rgba(16, 185, 129, 0.1);">
-                                </div>
-                            </div>
-                            <!-- Enhanced bracket with better styling -->
-                            <div style="position: absolute; right: -40px; top: 0; height: 171px;">
-                                <div style="border-right: 4px solid #10b981; border-top: 4px solid #10b981; border-bottom: 4px solid #10b981; width: 30px; height: 100%; position: relative; border-radius: 0 8px 8px 0;">
-                                    <div style="position: absolute; left: 35px; top: 50%; transform: translateY(-50%); white-space: nowrap; background: white; padding: 8px 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);">
-                                        <span style="font-size: 1.6em; font-weight: bold; color: #10b981;">114% increase</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="text-align: left; max-width: 180px; padding-bottom: 25px;">
-                            <div style="font-size: 1.3em; font-weight: bold; margin-bottom: 8px; color: #1E2886;">AO26</div>
-                            <div style="font-size: 1em; line-height: 1.4; color: #6b7280;">15 agencies forecasting to be top circular performers</div>
-                        </div>
+                    <!-- Forecast increase label at bottom -->
+                    <div style="position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); font-size: 1em; color: #1f2937; white-space: nowrap;">
+                        Forecast increase
                     </div>
                 </div>
             </div>
@@ -863,7 +882,7 @@
                 <h3 style="color: #1E2886;">Next Steps</h3>
                 <div class="numbered-point"><strong>01.</strong> Distribute to Circular Design Advocates for review/ input</div>
                 <div class="numbered-point"><strong>02.</strong> Consider what feedback is material (prioritised) to be addressed (how and when)</div>
-                <div class="numbered-point"><strong>03.</strong> We have limited performance visibility. Forecasted improvements lack clear mechanisms to track actual performance against projections – consider how to encourage actual outcomes in post event reporting</div>
+                <div class="numbered-point"><strong>03.</strong> We have limited performance visibility. Forecasted improvements lack clear mechanisms to track actual performance against projections &mdash; consider how to encourage actual outcomes in post event reporting</div>
                 <div class="numbered-point"><strong>04.</strong> Establish how far-reaching the Circular program awareness has been during event, that is, the gaps to include in future (agencies, builders, suppliers, designers)</div>
             </div>
 
